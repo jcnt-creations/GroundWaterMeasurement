@@ -1,0 +1,5 @@
+Dies ist eine Test Datei zum Github ausprobieren.
+
+bearbeitung
+
+Testen wir mal das gitignore file
