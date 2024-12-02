@@ -1,3 +1,0 @@
-/home/johann/Dokumente/GitHub/GroundWaterMeasurement/cmake-build-debug/CMakeFiles/GroundWaterMeasurement.dir
-/home/johann/Dokumente/GitHub/GroundWaterMeasurement/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/johann/Dokumente/GitHub/GroundWaterMeasurement/cmake-build-debug/CMakeFiles/rebuild_cache.dir
