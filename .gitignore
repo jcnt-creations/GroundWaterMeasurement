@@ -1,5 +1,6 @@
 .vscode
 
-CMakeList.txt
-cmake-build-debug/*
-.idea/*
+CMakeLists.txt
+/cmake-build-debug/*
+/.idea/*
+test2.txt
