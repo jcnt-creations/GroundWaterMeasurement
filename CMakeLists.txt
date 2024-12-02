@@ -4,7 +4,3 @@ project(GroundWaterMeasurement)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(GroundWaterMeasurement main.cpp)
-
-
-# adding some line
-#adding another line
