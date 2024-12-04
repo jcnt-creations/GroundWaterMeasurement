@@ -1,4 +1,4 @@
-##Concept ideas
+## Concept ideas
 - Sensor connected to ESP32
 - ESP32 with MQTT Publisher
 - Raspberry Pi 5 with Server
