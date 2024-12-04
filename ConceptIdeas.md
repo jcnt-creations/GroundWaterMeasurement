@@ -1,10 +1,15 @@
 ## Concept ideas
 - Sensor connected to ESP32
-- ESP32 with MQTT Publisher
+- ESP32 connected to WIFI
+- ESP32 with MQTT Publisher/Subscriber
 - Raspberry Pi 5 with Server
 - MQTT Broker
-- Server with MQTT Subscriber
+- Server with MQTT Subscriber/Publisher
 - Server with REST API
 - Server shows weekly and daily report
-- Server sends Notification if water level is too high
+- Server sends Notification if water level is too high - Pushover Addon Smarthome  
 - Server checks if pump is powerd and sends controll data to ESP32 to start/end meassurement
+- Server starts pump when the level is too high
+- Modbus-Connection to heat pump
+- Saving the data depending on the situation (ground water, pumped water level)
+- Server connected with heat pump to stop if water level is too low
