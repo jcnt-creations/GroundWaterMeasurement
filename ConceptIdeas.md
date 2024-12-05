@@ -13,3 +13,4 @@
 - Modbus-Connection to heat pump
 - Saving the data depending on the situation (ground water, pumped water level)
 - Server connected with heat pump to stop if water level is too low
+
