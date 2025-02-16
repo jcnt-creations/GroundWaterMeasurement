@@ -1,46 +1,49 @@
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/prepared_statement.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
 #include <iostream>
-#include <sys/socket.h>
-#include <thread>
-#include <vector>
-
-// Es wird die Boost.Asio-Bibliothek eingebunden
-// Ein globaler Puffer vBuffer wird erstellt. Der Puffer ist 1024 Bytes groß.
-std::vector<char> vBuffer(1024); // Puffer zum Speichern von empfangenen Daten
-
-// Die Funktion nimmt einen socket entgegen, der eine Verbindung zum Client
-// repräsentiert.
-/*void HandleClient(boost::asio::ip::tcp::socket socket) {
-    boost::system::error_code ec;
-
-    // Lesen der Daten vom Client
-    // werden Daten aus dem Socket gelesen und im globalen Puffer vBuffer
-    // gespeichert.
-    size_t length = socket.read_some(
-        boost::asio::buffer(vBuffer.data(), vBuffer.size()), ec);
-    if (ec) // Falls ein Fehler auftritt (ec ist nicht leer), wird die
-            // Fehlermeldung ausgegeben.
-    {
-        std::cerr << "Error reading from socket: " << ec.message() << std::endl;
-    } else // Wenn Daten erfolgreich gelesen wurden, werden sie auf der Konsole
-           // ausgegeben.
-    {
-        std::cout << "\nReceived data (" << length << " bytes):\n";
-        std::cout.write(vBuffer.data(), length);
-        std::cout << "\n";
-
-        // Sende eine Antwort zurück an den Client
-        std::string response =
-            "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\nHello from server!";
-        boost::asio::write(socket, boost::asio::buffer(response), ec);
-    }
-}*/
+#include <mysql_connection.h>
 
 int main() {
-    try {
-        int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-    } catch (const std::exception &e) {
-        std::cerr << "Exception: " << e.what() << "\n";
-    }
+	sql::Driver *driver = get_driver_instance();
+	// sql::Connection *con;
+	sql::Statement *stmt;
+	sql::ResultSet *res;
+	try {
+		std::unique_ptr<sql::Connection> con(driver->connect("192.168.10.50:3306", "test", "test")); // FILL IN HERE
+		if (con != NULL) {
+			std::cout << "MySQL Connected successfully!\n";
+		}
 
-    return 0;
+		stmt = con->createStatement();
+		res = stmt->executeQuery("SELECT * FROM test.test");
+		// res = stmt->executeQuery("SELECT * FROM test");
+		while (res->next()) {
+			/*std::cout << "\t... MySQL replies: ";
+			std::cout << res->getString("_message") << std::endl;
+			std::cout << "\t... MySQL says it again: ";
+			std::cout << res->getString(1) << std::endl; */
+			std::cout << "first: " << res->getInt("first") << "\nsecond: " << res->getInt("second") << std::endl;
+		}
+		/*delete res;
+		delete stmt;
+		delete con;*/
+
+		// Prepared statement
+		/*webserver *ws = new webserver(con.get(), 8080);
+		ws->Test();*/
+
+	} catch (sql::SQLException &e) {
+		std::cerr << "MySQL was NOT started or Incorrect credentials.\n" << e.what() << std::endl;
+
+		// closing all open connections
+		/*if (con->isValid())
+			con->close();
+		if (driver->isRegistered())
+			driver->threadEnd();
+		*/
+		return 1;
+	}
 }
