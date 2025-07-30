@@ -1,35 +1,50 @@
-#include "webserver.h"
+#include "webserver.hpp"
 
-void webserver::HandleClient(socket socket) {
-	/*boost::system::error_code ec;
+WebServer::WebServer(int port) : port(port) {
+	resource = make_shared<Resource>();
+	resource->set_path("/resource");
+	resource->set_method_handler("GET", bind(&WebServer::get_method_handler, this, placeholders::_1));
 
-	// Lesen der Daten vom Client
-	// werden Daten aus dem Socket gelesen und im globalen Puffer vBuffer
-	// gespeichert.
-	size_t length = socket.read_some(boost::asio::buffer(vBuffer.data(), vBuffer.size()), ec);
-	if (ec) // Falls ein Fehler auftritt (ec ist nicht leer), wird die
-			// Fehlermeldung ausgegeben.
-	{
-		std::cerr << "Error reading from socket: " << ec.message() << std::endl;
-	} else // Wenn Daten erfolgreich gelesen wurden, werden sie auf der Konsole
-		   // ausgegeben.
-	{
-		std::cout << "\nReceived data (" << length << " bytes):\n";
-		std::cout.write(vBuffer.data(), length);
-		std::cout << "\n";
+	auto settings = make_shared<Settings>();
+	settings->set_port(1984);
+	settings->set_default_header("Connection", "close");
 
-		// Sende eine Antwort zurück an den Client
-		std::string response = "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\nHello from server!";
-		boost::asio::write(socket, boost::asio::buffer(response), ec);
-	}*/
-
-	listen(serverSocket, 5);
-
-	int clientSocket = accept(serverSocket, NULL, NULL);
-
-	std::cout << "Client connected" << std::endl;
+	Service service;
+	service.publish(resource);
+	service.start(settings);
 }
 
-void webserver::Test() {
-	std::cout << "Test" << std::endl;
+void WebServer::get_method_handler(const shared_ptr<Session> session) {
+	const auto request = session->get_request();
+	const auto response = session->get_response();
+
+	const auto query_parameters = request->get_query_parameters();
+	const auto name = query_parameters->get("name", "World");
+
+	stringstream stream;
+	stream << "Hello, " << name << "!";
+
+	const auto message = stream.str();
+
+	response->set_status(200);
+	response->set_header("Content-Type", "text/plain");
+	response->set_body(message);
+	session->close(move(response));
+
+	/*const auto request = session->get_request();
+
+	size_t content_length = request->get_header("Content-Length", 0);
+
+	session->fetch(content_length, [](const shared_ptr<Session> &session, const Bytes &body) {
+		JsonBox::Value json;
+		json.loadFromString(string(body.begin(), body.end()));
+
+		// perform awesome solutions logic...
+
+		stringstream stream;
+		json.writeToStream(stream);
+		string response_body = stream.str();
+
+		session->close( OK, response_body, { { "Content-Length", ::to_string( response_body.length( ) }, { "Content-Type": "application/json" } } );
+	});*/
 }
